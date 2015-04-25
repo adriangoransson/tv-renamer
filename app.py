@@ -6,6 +6,7 @@
 from __future__ import print_function
 import argparse
 import json
+import os
 
 # import our worker class
 from renamer import Renamer
@@ -81,7 +82,8 @@ parser.add_argument('-v', '--verbosity', action='count', default=0,
                     help='verbosity, from less to more. -v, -vv, -vvv.')
 
 parser.add_argument('-c', '--config', metavar='FILE', dest='custom_config',
-                    help='Custom config file. Defaults to ./config.json.')
+                    help='Custom config file.'
+                         'Defaults to <APP DIR>/config.json.')
 
 parser.add_argument('--api-key', dest='api_key', help='Trakt API key.')
 
@@ -102,8 +104,11 @@ config_keys = [
     'api_key'
 ]
 config = {}
+
+__dir__ = os.path.dirname(os.path.realpath(__file__))
+
 try:
-    with open(args.config, 'r') as config_file:
+    with open(__dir__ + '/' + args.config, 'r') as config_file:
         for key, value in json.load(config_file).items():
             if key in config_keys:
                 config[key] = value
