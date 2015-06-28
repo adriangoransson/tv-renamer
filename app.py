@@ -93,7 +93,8 @@ args = parser.parse_args()
 if args.custom_config:
     args.config = args.custom_config
 else:
-    args.config = 'config.json'
+    __dir__ = os.path.dirname(os.path.realpath(__file__))
+    args.config = __dir__ + '/config.json'
 
 config_keys = [
     'extensions',
@@ -105,10 +106,9 @@ config_keys = [
 ]
 config = {}
 
-__dir__ = os.path.dirname(os.path.realpath(__file__))
 
 try:
-    with open(__dir__ + '/' + args.config, 'r') as config_file:
+    with open(args.config, 'r') as config_file:
         for key, value in json.load(config_file).items():
             if key in config_keys:
                 config[key] = value
