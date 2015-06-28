@@ -192,6 +192,7 @@ else:
 
 renamer.show_title = show['title']
 errors = []
+results = []
 
 for file in files:
     new_file = None
@@ -212,16 +213,26 @@ for file in files:
             if choice3 != 'y':
                 exit()
 
-    message = '{0} -> {1}'.format(file, new_file)
+    result = {'old': file, 'new': new_file}
     if config['dry_run']:
-        print('[DRY RUN] {0}'.format(message))
+        results.append(result)
     elif config['interactive']:
         choice4 = input('Rename {0} to {1}? [y/N] '.format(file, new_file))
         if choice4 == 'y':
             renamer.renameEpisode(file, new_file)
+            results.append(result)
     else:
         renamer.renameEpisode(file, new_file)
-        print('Renamed {0}'.format(message))
+        results.append(result)
+
+if results:
+    sorted_results = sorted(results, key=lambda x: x['new'])
+    for result in sorted_results:
+        if config['dry_run']:
+            message = '[DRY RUN] {0} -> {1}'
+        else:
+            message = 'Renamed {0} -> {1}'
+        print(message.format(result['old'], result['new']))
 
 if errors:
     print()
